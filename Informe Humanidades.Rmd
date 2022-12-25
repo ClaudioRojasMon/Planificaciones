@@ -1,0 +1,618 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Humanidades"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(stargazer)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+library(kableExtra)
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año. Además, consideran las definiciones claves que tenemos como colegio pero también como institución de la Compañía de Jesús. 
+
+Los apartados del informe son:
+
+- Definiciones Claves
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+- Sugerencias para la planificación de las unidades 2 y 3.
+
+Cada una de las partes de informe incluye sugerencias  que buscan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el logro de los aprendzajes que sean definidos. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+library(readxl)
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+library(readxl)
+BASE_FILOSOFIA <- read_excel("BASE FILOSOFIA.xlsx")
+
+library(readxl)
+BASE_EC <- read_excel("BASE EC.xlsx")
+
+
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+Base_I_Semestre_2021$NLH = factor (Base_I_Semestre_2021$NLH , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLH)
+
+Base_I_Semestre_2021$NLF = factor (Base_I_Semestre_2021$NLF  , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLF)
+
+Base_I_Semestre_2021$NLEC = factor (Base_I_Semestre_2021$NLEC  , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLEC)
+
+BASE_FILOSOFIA$NLF = factor (BASE_FILOSOFIA$NLF  , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(BASE_FILOSOFIA$NLF)
+
+BASE_EC$NLEC = factor (BASE_EC$NLEC  , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(BASE_EC$NLEC)
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por Niveles de Logro
+
+<Font face = "lato" color = blue size = 3>En el caso de los resultados, les sugiero analizar:</font>
+
+- <Font face = "lato" color = blue size = 3>Los promedios finales obtenidos por cada nivel</font>
+- <Font face = "lato" color = blue size = 3>Cantidad de estudiantes que están en cada nivel de logro.</font>
+- <Font face = "lato" color = blue size = 3>Las diferencias de resultados entre hombres y mujeres.</font>
+
+### Tabla Resumen de Notas: 
+
+La tres tablas siguintes  incluye la información de la asignatura  por  nivel en cuanto:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+#### Tabla 1: Historia
+
+
+```{r Datos Generales Historia por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+Base_Notas <- as.data.frame(Base_I_Semestre_2021)
+
+Base_Notas %>%  group_by(Nivel) %>% summarise(Promedio=mean(Historia,2, na.rm=TRUE), Mediana= median(Historia, na.rm=TRUE),NotaMínima=min(Historia, na.rm=TRUE), NotaMáxima=max(Historia, na.rm=TRUE ))
+```
+
+
+#### Tabla 2: Filosofía (Nivel Tercero Medio)
+
+```{r Datos Generales Filosofia por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+BASEF<- as.data.frame(BASE_FILOSOFIA)
+
+BASEF %>%  group_by(Nivel) %>% summarise(Promedio=mean(Filosofía,2, na.rm=TRUE), Mediana= median(Filosofía, na.rm=TRUE),NotaMínima=min(Filosofía, na.rm=TRUE), NotaMáxima=max(Filosofía, na.rm=TRUE ))
+
+```
+
+
+#### Tabla 3: Educación Ciudadana (Nivel Cuarto Medio)
+
+```{r Datos Generales Educación Ciudadana por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+BASEEC<- as.data.frame(BASE_EC)
+
+BASEEC %>%  group_by(Nivel) %>% summarise(Promedio=mean(EducCiud,2, na.rm=TRUE), Mediana= median(EducCiud, na.rm=TRUE),NotaMínima=min(EducCiud, na.rm=TRUE), NotaMáxima=max(EducCiud, na.rm=TRUE ))
+
+```
+
+
+
+### Notas de 1º básico a IIº medio Historia
+```{r Promedios de Matemáticas de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Historia, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  #ggtitle("Promedios Lenguaje I Semestre 2021") +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+En este caso, se muestran los resultados de Historia hasta IIº medio.. En el caso de IIIº se grafican  los resultados de Filosofía y en IVº medio, los resultados de Educación Ciudadana.
+
+
+#### Primeros Básicos 
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+    geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+```
+### Segundos Básicos
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=factor(NLH), fill= Historia)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=factor(NLH), fill= Historia)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=factor(NLH), fill= Historia)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos
+
+```{r Nivel de Logro 7º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Octavos Básicos 
+
+```{r Nivel de Logro 8º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLH, fill= Historia)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Medios Filosofia
+```{r Nivel de Logro IIIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+BASE_FILOSOFIA  %>%
+filter(Nivel=="11")  %>%
+  ggplot( aes(x=NLF, fill= Filosofía)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Cuartos Medios Educación Ciudadana
+```{r Nivel de Logro IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+BASE_EC  %>%
+filter(Nivel=="12")  %>%
+  ggplot( aes(x=NLEC, fill= EducCiud)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 45, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+## Metas de Aprendizajes 
+Se presentan las metas declaradas  por el sector desde 1º básico a IIº medio. En el caso de IIIº medio, las metas que se incluyen corresponden a Educación Ciudadana y Filosofía (al 15 de julio). Ajustar las metas considerando los siguientes criterios:
+
+- **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?**
+
+-  **¿Están escritas de manera clara y precisa?** <Font face = "lato" color = blue size = 3>  Ejemplo ***"Reflexionar sobre la diversidad cultural y geográfica del continente argumentando con fuentes dadas y mapas. (Cuarto básico)"*** o ***" Reconocer el valor del respeto a la diversidad, mediante la caracterización y representación del proceso de conquista de América y periodo Colonial."***</font> **¿Qué se entiende por reflexionar o reconocer el valor del respeto? ¿Cómo se evaluarán?**
+
+
+ - **¿Se usan los verbos adecuados?** <Font face = "lato" color = blue size = 3> Ejemplo: **"Se espera que los estudiantes identifiquen y ubiquen (Primero Básico)"**.</font> **Priorizar verbos que engloben más que una secuencia de éstos.**
+
+- <Font face = "lato" color = blue size = 3>**¿Dan cuenta de aprendizajes relevantes que deben adquirir mis estudiantes? ¿Es coherente con el plan de estudios?** </font>
+
+- **¿La meta da cuenta de aprendizajes o de productos a lograr?**<Font face = "lato" color = blue size = 3> Ejemplo: ***"Elaborar una cápsula digital informativa acerca de casos reales que ponen en riesgo la participación ciudadana y la democracia en el Chile actual" (Tercero medio).***</font> **En este caso, más que una meta es la evaluación de la meta.** 
+
+-  **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td>Se espera que los estudiantes reconozcan símbolos y diversas expresiones culturales que forman parte de nuestra identidad nacional y de las diversas identidades locales.</td>
+    <td>Se espera que los estudiantes identifiquen y ubiquen elementos de su entorno,inicien su ubicación espacial, a través de la interpretación y elaboración de planos simples, familiarización con los mapas y  reconocimiento de su utilidad, considerando los elementos naturales y artificiales, categorías de ubicación espacial y vocabulario geográfico.</td>
+  </tr>
+  <tr>
+    <td>Segundo básico</td>
+    <td>Los estudiantes comprenderán que  las características geográficas de cada zona determinan el estilo de vida de los pueblos originarios y su legado por medio de un proyecto.</td>
+    <td>Los estudiantes Vincularán el aporte que tiene de  la diversidad cultural (pueblos originarios, españoles e inmigrantes) para  con la construcción de la identidad nacional.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico</td>
+    <td>Explicar, cómo los seres humanos se han adaptado a las diferentes zonas climáticas de la tierra, utilizando herramientas geográficas y puntos de referencia a través de opiniones fundamentadas </td>
+    <td>Comparar los modos de vida de los griegos y romanos con nuestra sociedad, reconociendo las estrategias utilizadas en la antigüedad para resolver desafíos de la comunidad.</td>
+  </tr>
+  <tr>
+    <td>Cuarto básico</td>
+    <td>Reflexionar sobre la diversidad cultural y geográfica del continente argumentando con fuentes dadas y mapas. </td>
+    <td>Reflexionar sobre el legado de las civilizaciones americanas en nuestra sociedad por medio de la comparación de fuentes dadas. </td>
+  </tr>
+  <tr>
+    <td>Quinto básico</td>
+    <td>Evaluar los desafíos y oportunidades de las zonas naturales mediante las opiniones fundadas y el uso de mapas.</td>
+    <td>Reconocer el valor del respeto a la diversidad, mediante la caracterización y representación del proceso de conquista de América y periodo Colonial.</td>
+  </tr>
+  <tr>
+    <td>Sexto básico</td>
+    <td>Identificar  las posibilidades y desafíos de las diferentes zonas del país y comunicarlas a través de una inforgrafía.  </td>
+    <td>Caracterizar los principales hitos y procesos que le permitieron conformarse como una sociedad democrática, mediante la elaboración de un periódico de forma grupal. </td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo 
+
+Desde 7º básico a IIº medio, están las metas de  Historia. En IIIº medio, están las de Educación Ciudadana y en IVº medio, las que corresponden a Filosofía)
+
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico</td>
+    <td> Valorar el aporte de la diversidad a la vida cotidiana y al proceso de construcción de Europa, mediante la argumentación y caracterización de ejemplos sobre el sincretismo de la época. </td>
+    <td>Valorar expresiones culturales de las primeras civilizaciones americanas y europeas, mediante una investigación grupal reconociendo cambios y continuidades con nuestra vida actual. </td>
+  </tr>
+  <tr>
+    <td>Octavo básico</td>
+    <td>Analizar el periodo de conquista de América y la colonia como una etapa de transformaciones culturales, sociales, económicas y políticas en las que se da como resultado el mestizaje y la transculturación</td>
+    <td>Evaluar el impacto de las ideas de la Ilustración en los procesos de Independencias Americanas, Revolución Francesa y en el nuevo concepto de derechos del hombre surgido de estos.</td>
+  </tr>
+  <tr>
+    <td>Primero medio </td>
+    <td>Analizar la integración de Chile al orden capitalista mundial, desde la perspectiva de las relaciones sociales, económicas y políticas desarrolladas entre la burguesía y las clases trabajadoras, además de las respuestas ideológicas que surgieron frente a la Cuestión Social para resolver la problemática relación entre progreso y justicia.</td>
+    <td>Explicar la relación entre los distintos agentes de la economía y el impacto del actuar de estos en la vida de las personas.</td>
+  </tr>
+  <tr>
+    <td>Segundo Medio</td>
+    <td>Comprender la configuración del mundo bipolar, analizando los efectos los efectos de la Guerra Fría en Chile a través de diversas interpretaciones historiográficas.  </td>
+    <td>Comprender la supresión del estado de derecho durante la dictadura militar en Chile  la  recuperación de la democracia, las estrategias de reivindicación de los derechos humanos.y analizar el modelo económico neoliberal</td>
+  </tr>
+  <tr>
+  <td>Tercero Medio Educación Ciudadana</td>
+    <td>Analizar criticamente la modalidades de participación ciudadana actual, a partir de las perspectivas del republicanismo, liberalismo y comunitarismo.</td>
+    <td>Elaborar una cápsula digital informativa acerca de casos reales que ponen en riesgo la participación ciudadana y la democracia en el Chile actual.</td>
+    </tr>
+  <tr>
+  <td>Cuarto Medio Filosofía</td>
+    <td>Desarrollar una propuesta de solución a un dilema bioético real, evaluando teorías éticas contemporáneas fundamentales, y analizar propuestas de sus pares por medio del diálogo.</td>
+    <td></td>
+  </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación II Semestre 2021
+ En la siguiente tabla se presentan los procedimientos e instrumentos declarados por el sector  (1º básico en adelante) y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios:
+
+- <Font face = "lato" color = blue size = 3>¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento? </font> **En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf).** 
+
+- <Font face = "lato" color = blue size = 3> **¿Existe una diversidad de formas de evaluar o se limitan a la práctica recurrente de procedimientos e instrumentos utilizados en el sector?**</font>.**Es necesario revisar si, en la implementación, hay diferencias metodológicas  entre **<Font face = "lato" color = blue size = 3> ***Exposición oral o Presentación oral*** </font> **o simplemente, estamos denominado  de distinta manera una clásica disertación. Se debe consensuar que se entenderá en el sector por** <Font face = "lato" color = blue size = 3>***Investigación, Ensayo o Exposición oral*** </font>. **Eso puede permitir definir una línea de trabajo del equipo.** 
+
+- <Font face = "lato" color = blue size = 3>**¿Lo declarado, permite dar cuenta de manera adecuada de los OA y  de las metas definidas en el sector?** </font>
+
+
+Por último, se agrega una nube de palabras que quiere reflejar el peso de los instrumentos/procedimientos declarados por el sector.En este caso, se incorporó lo declarado en Historia, Filosofía y Educación Ciudadana.
+
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+excel_sheets("Plan de Evaluación II Semestre 2021.xlsx")
+
+excel_Historia<- read_excel("Plan de Evaluación II Semestre 2021.xlsx",sheet="Historia")
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(excel_Historia))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("025", "cinstrumento", "015", "035"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat, 20)
+w<-wordcloud2(data = cat)
+w
+```
+
+En el caso del **Plan de Nivel**, les solicito que cómo sector concuerden y plasmen en la planificación:
+
+- En qué sesiones se evaluará el o los OA que se hacen responsables. 
+- El o los instrumentos que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...',  warning=FALSE, message= FALSE,echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+ 
+ 
+ 

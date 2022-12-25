@@ -1,0 +1,747 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Ciencias"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(stargazer)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+#library(kableExtra)
+
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año, considerando las definiciones claves que tenemos como colegio pero también como una institución de la Compañía de Jesús. 
+
+Este informe incluye:
+
+- Definiciones Clases
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+
+Cada una de las partes de informe incluye sugerencias  que bucan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el trabajo de la segunda parte del presente año. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+FISQUI <- read_excel("FISQUI.xlsx")
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+Base_I_Semestre_2021$NLCN = factor (Base_I_Semestre_2021$NLCN , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLCN)
+
+Base_I_Semestre_2021$NLFIS = factor (Base_I_Semestre_2021$NLFIS , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLFIS)
+
+Base_I_Semestre_2021$NLQ = factor (Base_I_Semestre_2021$NLQ  , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLQ)
+
+Quimica <- read_excel("Notas /I Semestre 2021/Quimica.xlsx")
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por Niveles de Logro.
+
+<Font face = "lato" color = blue size = 3>En el caso de los resultados, les sugiero analizar:</font>
+
+- <Font face = "lato" color = blue size = 3>Los promedios finales obtenidos por cada nivel</font>
+- <Font face = "lato" color = blue size = 3>Cantidad de estudiantes que están en cada nivel de logro.</font>
+- <Font face = "lato" color = blue size = 3>Las diferencias de resultados entre hombres y mujeres.</font>
+
+### Tabla de Resumen de Notas: 
+
+Cada tabla incluye la siguiente información de la asignatura  por  nivel:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+#### Tabla 1: Ciencias Naturales /Biología (Primero básico a Cuarto medio)
+
+```{r Datos Generales en Tabla SKIM por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+
+Base_I_Semestre_2021 %>%  group_by(Nivel) %>% summarise(Promedio=mean(Ciencias,2, na.rm=TRUE), Mediana= median(Ciencias, na.rm=TRUE),NotaMínima=min(Ciencias, na.rm=TRUE), NotaMáxima=max(Ciencias, na.rm=TRUE ))
+```
+
+
+#### Tabla 2: Fisica (Primero a Cuarto Medio)
+```{r Datos Generales Física por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+
+FISQUI  %>%  group_by(Nivel) %>% summarise(Promedio=mean(Física,2, na.rm=TRUE), Mediana= median(Física, na.rm=TRUE),NotaMínima=min(Física, na.rm=TRUE), NotaMáxima=max(Física, na.rm=TRUE ))
+
+```
+
+#### Tabla 3: Química (Primero a Cuarto Medio)
+
+```{r Datos Generales Química por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+
+FISQUI %>%  group_by(Nivel) %>% summarise(Promedio=mean(Química,2, na.rm=TRUE), Mediana= median(Química, na.rm=TRUE),NotaMínima=min(Química, na.rm=TRUE), NotaMáxima=max(Química, na.rm=TRUE ))
+
+```
+
+
+### Notas de 1º básico a IVº medio 
+```{r Promedios de Lenguaje de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Ciencias, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+#### Primeros Básicos 
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+    geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 55, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+  
+
+```
+
+### Segundos Básicos
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=factor(NLCN), fill= Ciencias)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 45, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=factor(NLCN), fill= Ciencias)) +
+  geom_bar(position = 'stack', stat = 'count')+
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=factor(NLCN), fill= Ciencias)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 24, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count')+
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos
+
+```{r Nivel de Logro 7º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 34, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Octavos Básicos 
+
+```{r Nivel de Logro 8º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 40, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios Biología
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 22, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios Física
+```{r Nivel de Logro Iº medio Física, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLFIS, fill= Física)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 34, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios Química
+```{r Nivel de Logro Iº medio Química, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLQ, fill= Química)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 35, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+
+#### Segundos  Medios Biología
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 40, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos  Medios Física
+```{r Nivel de Logro IIº medio Física, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLFIS, fill= Física)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 40, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios Química
+```{r Nivel de Logro IIº medio Química, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLQ, fill= Química)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 50, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Terceros Medio
+```{r Nivel de Logro IIIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+  Base_I_Semestre_2021 %>%
+  filter(Nivel=="11")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+  geom_bar() +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Medios
+```{r Nivel de Logro IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="12")  %>%
+  ggplot( aes(x=NLCN, fill= Ciencias)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+## Metas de Aprendizajes 
+Se incluye las Metas de Ciencias Naturales y Biología, Física y Química. En el caso de estas dos últimas, las referidas a primero y segundo medio. Ajustar las metas considerando los siguientes criterios:
+
+- **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?**
+
+- **¿Están escritas de manera clara y precisa?** <Font face = "lato" color = blue size = 3> Ejemplo: ***"Observen e investiguen de forma experimental, las funciones de cada una de las partes de la planta. Asimismo, deberán formular preguntas y predicciones sobre las necesidades vitales de las plantas y acerca de las principales transformaciones que experimentan durante su ciclo de vida, reconociendo su importancia para la vida de los seres vivos y el medio ambiente siendo conscientes de la importancia de usar adecuadamente los recursos."***</font>  **Revisar la escritura  de metas ya  que más parece una suma de OA**
+
+-  **¿Se usan los verbos adecuados?** <Font face = "lato" color = blue size = 3> Ejemplo: ***"Comprenden,a través de la exploración y la investigación,  que existen elementos vivos y no vivos en los diversos ecosistemas de Chile, y que los seres vivos  poseen adaptaciones que les permiten vivir en determinado lugar existiendo una diversidad de interacciones como las cadenas alimentarias, y como estas pueden ser modificadas por la actividad humana.(Cuarto básico)" ***. </font>  **En este caso, hay tres verbos y quizás solo con el de Investigación es suficiciente. Corregir este tipo de metas.**
+
+
+-  **¿Las metas expresan aprendizajes relevantes que deben adquirir mis estudiantes?** <Font face = "lato" color = blue size = 3> Ejemplo: ***"Describir los aportes de cientificas chilenas y cientificos chilenos en la astronomía y el resto del mundo (Primero medio - Física)"***</font>. **Esto más que una meta parece un objetivo que forma parte de una meta?** 
+
+-  **Poner  atención en metas excesivamente largas que resultan ser una suma de objetivos más que una meta?** <Font face = "lato" color = blue size = 3> Ejemplos: **Metas de 5º, 6º y 7º básico.**</font>
+
+-  **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer, Describir***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td>Identifiquen, exploren y pongan en acción sus habilidades científicas, concientizando las herramientas de exploración de su entorno y su propio cuerpo. Serán capaces de profundizar en sus 5 sentidos y también explorarán por medio de la observación y análisis, distintas situaciones para percibir el mundo que los rodea.</td>
+    <td>Comprenderán la importancia del cuidado y autocuidado de su propio cuerpo y el de los demás, experimentando y aprendiendo hábitos de vida saludable respecto a su alimentación, higiene y ejercicio físico, por medio de la participación de diversas actividades y asignaturas en un proyecto de aprendizaje.</td>
+  </tr>
+  <tr>
+    <td>Segundo básico</td>
+    <td>Los estudiantes comprenderán la importancia de cuidar los principales órganos de su cuerpo dada la función que cumplen en nuestro organismo, valorando el beneficio que tiene el autocuidado y la vida saludable.</td>
+    <td>Los estudiantes comprenderán la importancia del agua como elemento vital y trascendental para la vida en nuestro planeta. </td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico</td>
+    <td>Observen e investiguen de forma experimental, las funciones de cada una de las partes de la planta. Asimismo, deberán formular preguntas y predicciones sobre las necesidades vitales de las plantas y acerca de las principales transformaciones que experimentan durante su ciclo de vida, reconociendo su importancia para la vida de los seres vivos y el medio ambiente siendo conscientes de la importancia de usar adecuadamente los recursos. </td>
+    <td>Describir los componentes del Sistema Solar y explicar, por medio de actividades prácticas, los movimientos de la Tierra por medio de modelos, además de conocer sucesión de fases de la Luna y eclipses, para comprender las consecuencias de estos fenómenos en nuestra vida cotidiana.</td>
+  </tr>
+  <tr>
+    <td>Cuarto básico</td>
+    <td>Comprenden,a través de la exploración y la investigación,  que existen elementos vivos y no vivos en los diversos ecosistemas de Chile, y que los seres vivos  poseen adaptaciones que les permiten vivir en determinado lugar existiendo una diversidad de interacciones como las cadenas alimentarias, y como estas pueden ser modificadas por la actividad humana. </td>
+    <td>Comprendan que el movimiento corporal del ser humano es provocado por la interacción coordinada entre músculos, huesos y tendones coordinada por el sistema nervioso, incorporando los efectos negativos que tiene el consumo de alcohol para la salud humana.</td>
+  </tr>
+  <tr>
+    <td>Quinto básico</td>
+    <td>Conozcan diferentes formas en se manifiesta la energía, que comprendan la conformación de un circuito eléctrico simple, que distingan entre materiales conductores y no conductores y que en definitiva, dimensionen la importancia para el ser humano de la energía en general</td>
+    <td>Comprendan los diferentes niveles de organización de los seres vivos, desde la célula hasta la totalidad del organismo. En este marco, se espera que los estudiantes aprendan algunas características de las células y que reconozcan la importancia de la alimentación para las actividades vitales. Asimismo, se pretende que se aproximen al estudio de los diferentes sistemas del cuerpo humano y a la integración de los mismos. Además se  busca que los estudiantes tomen conciencia sobre los efectos nocivos para la salud que producen el consumo de cigarrillos y el contagio de enfermedades por agentes infecciosos. A partir de estos conocimientos, se espera que adopten conductas favorables para su salud. Al mismo tiempo, se pretende que reconozcan la existencia de agentes, como bacterias y hongos que son beneficiosas para la salud de las personas.</td>
+  </tr>
+  <tr>
+    <td>Sexto básico</td>
+    <td>Comprendan las características de las capas de la Tierra y de los distintos tipos de suelo. En este punto es importante que comprendan las relaciones de interdependencia entre los seres vivos y el suelo en que habitan. Además se espera que los estudiantes comprendan que la energía necesaria para los seres vivos es aportada por plantas, algas y microorganismos a través del proceso de fotosíntesis.</td>
+    <td>Explicar la pubertad como una etapa del desarrollo en la que ocurren una serie de cambios en hombres y mujeres, comprendiendo que el cuidado del cuerpo requiere practicar un estilo de vida saludable (higiene, alimentación, sueño, etc).</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo 
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico</td>
+    <td>Explicar el desarrollo de un nuevo individuo considerando aspectos biológicos femeninos y masculinos,incorporando la responsabilidad y autocuidado que el cuerpo requiere.</td>
+    <td>Describir el funcionamiento general del sistena inmune del organismo en función de agentes patógenos que pueden estimular una respuesta inmunitaria de las barreras defensivas, reconociendo los beneficios del uso de vacunas de la población en la protección contra infecciones.</td>
+  </tr>
+  <tr>
+    <td>Octavo básico</td>
+    <td>Expliquen la interacción sistémica corporal, considerando: El rol del sistema excretor en relación con la filtración de la sangre, la regulación de la cantidad de agua en el cuerpo y la eliminación de desechos. 
+    
+Analicen la estructura y las propiedades de la materia, a partir de modelos explicativos. También se busca establecer las características del átomo como unidad estructural base de la materia y su capacidad de interactuar para formar unidades mayores. Por otra parte se define la clasificación y el orden de elementos químicos en el sistema periódico, identificando la tabla periódica como una herramienta de orden a partir de criterios físicos y químicos.</td>
+    <td>Expliquen las interacciones que pueden ocurrir entre dos cuerpos cargados eléctricamente, refiriéndose a la ley de atracción y repulsión. Analizarán circuitos eléctricos simples y aquellos que tienen una disposición en serie y en paralelo, y los compararán en función de características como la potencia y la energía eléctrica que disipan, la intensidad de corriente, la resistencia eléctrica y la diferencia de potencial, considerando las leyes de Ohm y de Joule. 
+
+Comprendan cómo funciona el circuito eléctrico domiciliario, sus características generales, sus mecanismos de seguridad y el uso de dispositivos con consumo eficiente de energía, entre otros. Además se espera que comprendan que el calor es un proceso natural de transferencia de energía térmica entre dos cuerpos bajo ciertas condiciones; que la temperatura no es lo mismo que el calor y que para medir temperatura hay diversos termómetros y escalas de medición, como las Kelvin, Celsius y Fahrenheit, entre otras.</td>
+  </tr>
+  <tr>
+    <td>Primero medio </td>
+    <td>Analizar el flujo de materia y energía considerando la transferencia que se produce en las redes y tramas tróficas entre organismos y en relación con su ambiente por medio de los ciclos biogeoquímicos.</td>
+    <td>Explicar cómo se organizan e interactúan los seres vivos en diversos ecosistemas, considerando interacciones biológicas intraespecíficas e interespecíficas (como depredación, competencia, comensalismo, mutualismo, parasitismo) y como estas pueden afectar el tamaño de una población.</td>
+  </tr>
+  <tr>
+    <td>Segundo medio</td>
+    <td>Explicar la transmisión de la herencia genética a partir de los principios básicos propuestos por Mendel.</td>
+    <td>Analizar el funcionamiento endocrino en la coordinación de procesos fisiológicos que requieren de la acción conjunta de diversos órganos y sistemas, usando el proceso de reproducción y el control de la glicemia como ejemplos</td>
+  </tr>
+  </tr>
+  <td>Tercero medio</td>
+    <td>Aplican las leyes de Mendel en la resolución de problemas de genética simple (mono y dihibridismo). 
+    
+Explican ejemplos concretos y cotidianos de los términos ingeniería genética, manipulación genética, terapia génica, organismos transgénicos y biotecnología. Evalúan el impacto social, económico y ambiental, entre otros,de innovaciones biotecnológicas como la producción de insulina y fármacos, y la generación o creación de vacunas</td>
+    <td>Investigar, factores biológicos, ambientales y sociales que influyen en
+la salud humana (como la nutrición, el consumo de alimentos transgénicos, la actividad física, el estrés,el consumo de alcohol y drogas, y la exposición a rayos UV, plaguicidas, patógenos y elementos contaminantes, entre otros). Comparar diversas medicinas (incluyendo la convencional, la tradicional de nuestros pueblos originarios y la complementaria alternativa), considerando su origen, conocimientos y prácticas para la resolución de problemas de salud cotidianos</td>
+    </tr>
+  <tr>
+  <td>Cuarto Medio</td>
+    <td>Analizar qué factores biológicos, ambientales y sociales influyen en la salud humana y cómo la medicina convencional y tradicional de los pueblos originarios ayudan a resolver problemas de salud cotidianos.</td>
+     <td>Analizar mediante evidencias, la transmisión de agentes infecciosos en Chile y el mundo, mencionando ejemplos, evaluando en forma crítica las medidas de prevención como el uso de vacunas.</td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Iº y IIº medio Física
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Medio</td>
+    <td>Comprender el mundo natural y tecnológico a partir del estudio de fenómenos relacionados con la reflexión y la refracción de la luz. Es relevante que sean capaces de predecir sobre el comportamiento de la luz al incidir con un espejo o al atravesar en vidrios o lentes, y sobre las características de las imágenes formadas.</td>
+    <td>Describir los aportes de cientificas chilenas y cientificos chilenos en la astronomía y el resto del mundo.</td>
+  </tr>
+  <tr>
+    <td>Segundo Medio</td>
+    <td>Comprender que, para describir el movimiento de un cuerpo, se requiere de un sistema de referencia, que se escoge de manera arbitraria y según conveniencia, en situaciones cotidianas y cercanas, y las características de los movimientos rectilíneo uniforme y uniformemente acelerado y movimiento vertical, tanto en forma analítica como en forma gráfica.</td>
+    <td>Comprender los efectos que provocan las fuerzas sobre los cuerpos en los que actúan, así como las leyes de la naturaleza que se relacionan con ellas, como los principios de Newton en diversas situaciones cotidianas en las que participan las fuerzas. Así como también deberán utilizar correctamente un diagrama de cuerpo libre para obtener la fuerza neta que actúa en un cuerpo.</td>
+   </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Iº y IIº medio Química
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Medio</td>
+    <td>Comparar diversas ecuaciones químicas de procesos cotidianos como oxidación, fermentación, fotosíntesis y respiración celular, por ejemplo para demostrar la relación estequiométrica que se da entre reactantes y productos en una ecuación química balanceada. Modelar los procesos de respiración celular y Fotosíntesis desde la estequiometría de sus reacciones químicas aplicando este modelo a otras reacciones químicas cotidianas.</td>
+    <td>Contrastar evidencias de diversas reacciones químicas cotidianas a partir de la reacreación de éstas en forma experimental considerando los efectos de factores como cantidad de sustancia, temperatura y presión sobre el rendimiento de las reacciones químicas.Explicar el impacto sobre seres humanos, animales y medio ambiente de fenómenos naturales o provocados por el hoombre, desde una mirada cuantitativa y cualitativa de productos químicos formados.</td>
+  </tr>
+  <tr>
+    <td>Segundo Medio</td>
+    <td>Clasifica diversas sustancias químicas básicas a nivel celular como aminoácidos, glucosa y bases nitrogenadas por ejemplo, en función de la estructura del esqueto carbonado que las constituye.Construir modelos tridimensionales de diversas moléculas organicas como metano, butano, ciclopentano y benceno, entre otras, respetando la disposición del átomo de carbono en la cadena carbonada.  </td>
+    <td>Comprender los efectos que provocan las fuerzas sobre los cuerpos en los que actúan, así como las leyes de la naturaleza que se relacionan con ellas, como los principios de Newton en diversas situaciones cotidianas en las que participan las fuerzas. Así como también deberán utilizar correctamente un diagrama de cuerpo libre para obtener la fuerza neta que actúa en un cuerpo.</td>
+   </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación IIº semestre 2021
+En la siguiente tabla se presentan los procedimientos e instrumentos declarados por el sector (1º básico en adelante) y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios:
+
+- <Font face = "lato" color = blue size = 3>**¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento?** </font> **En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf).** 
+
+-  **Es importante revisar los instrumentos o procedimientos  que se utilizarán, ya que lo declarado** <Font face = "lato" color = blue size = 3> ***favorece una práctica más tradicional de la evaluación del aprendizaje: guía, prueba, test.*** </font>
+
+
+Por último, se agrega una nube de palabras que quiere reflejar la diversidad de instrumentos y el peso de cada uno de ellos.
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+excel_sheets("Plan de Evaluación II Semestre 2021.xlsx")
+
+excel_CCNN<-read_excel("Plan de Evaluación II Semestre 2021.xlsx", sheet= "Biología")
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(excel_CCNN))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("cplanl", "cna","cprueba", "ccontrol"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat, 100)
+w<-wordcloud2(data = cat)
+w
+```
+En el caso del **Plan de Nivel**, les solicito que como sector concuerden y plasmen en la planificación
+
+- En qué sesiones se evaluarán el OA que se hace responsable el sector. 
+- El instrumento que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+
+
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...', echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+
+

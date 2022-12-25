@@ -1,0 +1,538 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Fe y Ética"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(stargazer)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+library(kableExtra)
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año. Además, consideran las definiciones claves que tenemos como colegio pero también como institución de la Compañía de Jesús. 
+
+Los apartados del informe son:
+
+- Definiciones Claves
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+- Sugerencias para la planificación de las unidades 2 y 3.
+
+Cada una de las partes de informe incluye sugerencias  que buscan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el logro de los aprendzajes que sean definidos. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+
+library(readxl)
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+
+Religio_n <- read_excel("Religión.xlsx")
+
+Base_I_Semestre_2021$NLFE = factor (Base_I_Semestre_2021$NLFE , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLFE)
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas 
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por niveles de logro.
+
+<Font face = "lato" color = blue size = 3>En el caso de los resultados, les sugiero analizar:</font>
+
+- <Font face = "lato" color = blue size = 3>Los promedios finales obtenidos por cada nivel</font>
+- <Font face = "lato" color = blue size = 3>Cantidad de estudiantes que están en cada nivel de logro.</font>
+- <Font face = "lato" color = blue size = 3>Las diferencias de resultados entre hombres y mujeres.</font>
+
+### Tabla Resumen de Notas: 
+
+Esta tabla incluye la información de la asignatura por  nivel en cuanto:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+```{r Datos Generales en Tabla SKIM por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+
+
+Religio_n %>% group_by(Nivel) %>% summarise(Promedio=mean(Fética,2, na.rm=TRUE), Mediana= median(Fética, na.rm=TRUE),NotaMínima=min(Fética, na.rm=TRUE), NotaMáxima=max(Fética, na.rm=TRUE ))
+```
+
+### Notas de 1º básico a IIº medio 
+```{r Promedios de Matemáticas de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=Nivel, y=Fética, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  scale_x_continuous(breaks = seq(1, 10, 1)) +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+#### Primeros Básicos 
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+    geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+```
+### Segundos Básicos
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos
+
+```{r Nivel de Logro 7º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 32, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Octavos Básicos 
+
+```{r Nivel de Logro 8º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros  Medios
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLFE, fill= Fética)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+## Metas de Aprendizajes 
+Se presentan las metas declaradas  por el sector desde 1º básico a IIIº medio (al 15 de julio). Ajustar las metas considerando los siguientes criterios: 
+
+-  **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?**
+
+- **¿Están escritas de manera clara y precisa(son medibles)** <Font face = "lato" color = blue size = 3> Ejemplo: ***Comprenderán que Dios elige a María para ser la Madre de Jesús y analizarán por qué es modelo de vida para los cristianos. Además, identificarán el significado del tiempo liturgico de Adviento y cómo nos prepara para vivir con ilusión la Navidad, así mismo explicarán el verdadero significado de la Navidad. (Segundo básico)***</font> **En este caso hay tres temas en uno. Hay que revisar esto porque se repite en varias metas.** 
+
+-  **¿Dan cuenta de aprendizajes relevantes que deben adquirir mis estudiantes? ¿Es coherente con el plan de estudios?** <Font face = "lato" color = blue size = 3>Ejemplo: ***"Reconocen las variantes que ocasionan el mal en la sociedad (séptimo básico)"***.</font> **¿Es una meta relevante o es un objetivo que debe ser parte de una meta? Además, el verbo reconocer es bastante básico en cuanto a aprendizaje para ser una meta.**
+
+
+-  **¿La meta da cuenta de aprendizajes o de productos a lograr?** <Font face = "lato" color = blue size = 3>Ejemplo: ***"Crean proyecto de intervención cultural que se desprende de los conocimientos adquiridos de la Doctrina social de la Iglesia analizando las variantes de su aplicación en el siguiente año academico" (tercero medio).***</font> **En este caso: ¿Es una meta o la evaluación de una meta? Además, no puede quedar para el próximo año, debe evaluarse ahora.**
+
+-  **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td>Identificarán que todos tenemos distintas capacidades y nos podemos complementar para hacer de este mundo un mejor lugar.</td>
+    <td>Analizarán que hay objetos y lugares sagrados que se reservan para nuestra relación con Dios y por qué los cristianos estamos invitados a celebrar el nacimiento de Jesús. </td>
+  </tr>
+  <tr>
+    <td>Segundo básico</td>
+    <td>Comprenderán que Dios se da a conocer en la Biblia, que es su Palabra y analizarán parte básica de la estructura de la Biblia. Además, comprenderán que el Antiguo Testamento nos cuenta la historia de los amigos de Dios y el Nuevo Testamento nos habla de la vida de Jesús y de sus amigos los Apóstoles.</td>
+    <td>Comprenderán que Dios elige a María para ser la Madre de Jesús y analizarán por qué es modelo de vida para los cristianos. Además, identificarán el significado del tiempo liturgico de Adviento y cómo nos prepara para vivir con ilusión la Navidad, así mismo explicarán el verdadero significado de la Navidad.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico</td>
+    <td>Reflexionán y explicarán cómo respondemos al amor de Dios y analizarán la invitación que nos hace Jesús a perdonar a los demás. </td>
+    <td>Reflexionarán y comprenderán sobre la fuerza y el amor que Dios nos entrega mediante el Espíritu Santo y recordarán la importancia del SÍ de María para nuestra salvación.. </td>
+  </tr>
+  <tr>
+    <td>Cuarto básico</td>
+    <td>Comprender que Jesús hace presente el Reino de Dios, por medio de sus palabras y acciones, enseñando que no es un reino como los que acostumbramos conocer, sino que es un Reino en el que todos tenemos cabida.</td>
+    <td>Comprender que el Reino de Dios se hace presente en el momento en que nos relacionamos con otros, viviendo de manera solidaria, identificando al otro como mi hermano/a.</td>
+  </tr>
+  <tr>
+    <td>5º básico</td>
+    <td>Comprender que el llamado a ser testigo de Dios, es una invitación a anunciar su cercanía y cariño por sus hijos e hijas, reconociéndolo como un Padre amoroso que nunca nos abandona.</td>
+    <td>Comprender que Jesús es nuestro gran amigo que nos muestra el camino hacia Dios Padre, por medio de sus enseñanzas, y que María es nuestra Madre, modelo de fe y entrega.</td>
+  </tr>
+  <tr>
+    <td>6º básico</td>
+    <td>Reflexionarán y analizarán las enseñanzas que nos dejó Jesús, para poder ponerlas en práctica hoy.  </td>
+    <td>Reconocerán y argumentarán el ejemplo que nos da en su vida María como camino de santidad.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo (7º básico a IIIº medio)
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico</td>
+    <td>Reconocen las variantes que ocasionan el mal en la sociedad.</td>
+    <td>Descubrir el papel que tiene el ser humano en la creación de Dios.</td>
+  </tr>
+  <tr>
+    <td>Octavo básico</td>
+    <td>Reconocer los Sacramentos de perdón como una forma de vincularse con Dios desde lo material a lo espiritual.</td>
+    <td>Reconocer los Sacramentos de servicio  como una forma de vincularse con Dios desde lo material a lo espiritual.</td>
+  </tr>
+  <tr>
+    <td>Primero medio </td>
+    <td>Identifican problemáticas que interfieren en la probreza espiritual/material.</td>
+    <td>Vinculan los 10 mandamientos y el orden moral del ser humano en búsqueda de la felicidad.</td>
+  </tr>
+  <tr>
+    <td>Segundo medio</td>
+    <td>Investigan sucesos importantes que marcan la Historia de la Iglesia dede la edad media hasta el siglo XXI. Presentan su investigación por medio de un portafolio digital en Gsuite.</td>
+    <td>Investigan sucesos importantes que marcan la Historia de la Iglesia dede la edad media hasta el siglo XXI. Presentan su investigación por medio de un portafolio digital en Gsuite.</td>
+  </tr>
+  <tr>
+  <td>Tercero medio</td>
+    <td>Conocen los pilares fundametales de la Doctrina Social de la Iglesia que se desprenden de los documentos Magisteriales. </td>
+    <td>Crean proyecto de intervención cultural que se desprende de los conocimientos adquiridos de la Doctrina social de la Iglesia analizando las variantes de su aplicación en el siguiente año academico.</td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación II Semestre 2021
+En la siguiente tabla se presentan los procedimientos e instrumentos declarados por el sector (1º básico en adelante) y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios:
+
+- <Font face = "lato" color = blue size = 3>¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento? </font> **En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf).** 
+
+- <Font face = "lato" color = blue size = 3>¿Existe una diversidad de formas de evaluar o se limitan a la práctica recurrente de procedimientos e instrumentos utilizados en el sector?</font> **Es necesario revisar si, en la implementación, hay diferencias metodológicas  entre Pruebas/Test, Informe/Avance. Además, de especificar que significa un prototipo o si la investigación es parte de un proceso o es el único producto.**
+
+- <Font face = "lato" color = blue size = 3>¿Lo declarado, permite dar cuenta de manera adecuada de los OA y, sobre todo,  de las metas definidas en el sector? </font>
+
+
+Por último, se agrega una nube de palabras que quiere reflejar el peso de los instrumentos/procedimientos declarados por el sector.
+
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+excel_sheets("Plan de Evaluación II Semestre 2021.xlsx")
+
+fetica <- read_excel("Plan de Evaluación II Semestre 2021.xlsx", sheet="Religión")
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(fetica))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("035", "cinstrumento", "015","cporcentaje"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat,7)
+R<-wordcloud2(data = cat)
+R
+```
+
+En el caso del **Plan de Nivel**, les solicito que cómo sector concuerden y plasmen en la planificación:
+
+- En qué sesiones se evaluará el o los OA que se hacen responsables. 
+- El o los instrumentos que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...',  warning=FALSE, message= FALSE,echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+ 
+ 
+ 

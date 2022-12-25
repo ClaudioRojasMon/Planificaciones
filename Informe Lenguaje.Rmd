@@ -1,0 +1,564 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Lenguaje y Comunicación"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+library(kableExtra)
+
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año, considerando las definiciones claves que tenemos como colegio pero también como una institución de la Compañía de Jesús. 
+
+Este informe incluye:
+
+- Definiciones Clases
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+
+Cada una de las partes de informe incluye sugerencias  que bucan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el trabajo de la segunda parte del presente año. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+Base_I_Semestre_2021$NLL = factor (Base_I_Semestre_2021$NLL , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLL)
+
+Base_I_Semestre_2021V2 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021V2.xlsx")
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por Niveles de Logro.
+
+<Font face = "lato" color = blue size = 3>En el caso de los resultados, les sugiero analizar:</font>
+
+- <Font face = "lato" color = blue size = 3>Los promedios finales obtenidos por cada nivel</font>
+- <Font face = "lato" color = blue size = 3>Cantidad de estudiantes que están en cada nivel de logro.</font>
+- <Font face = "lato" color = blue size = 3>Las diferencias de resultados entre hombres y mujeres.</font>
+
+### Tabla de Resumen de Notas: 
+
+Esta tabla incluye la información de la asignatura por nivel en cuanto:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+```{r Datos Generales en Tabla SKIM por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+
+Base_I_Semestre_2021  %>% group_by(Nivel) %>% summarise(Promedio=mean(Lenguaje,2, na.rm=TRUE), Mediana=median(Lenguaje,na.rm=TRUE), NotaMínima=min(Lenguaje,na.rm=TRUE), NotaMáxima=max(Lenguaje, na.rm = TRUE) )
+```
+
+### Notas de 1º básico a IVº medio 
+```{r Promedios de Lenguaje de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Lenguaje, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+#### Primeros Básicos 
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+    geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+  
+
+```
+### Segundos Básicos
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=factor(NLL), fill= Lenguaje)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 32, 4)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=factor(NLL), fill= Lenguaje)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 39, 3)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=factor(NLL), fill= Lenguaje)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 36, 4)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 26,2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos
+
+```{r Nivel de Logro 7º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 26, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Octavos Básicos 
+
+```{r Nivel de Logro 8º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 32, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 26, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Medios
+```{r Nivel de Logro IIIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="11")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 28, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Cuartos Medios
+```{r Nivel de Logro IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="12")  %>%
+  ggplot( aes(x=NLL, fill= Lenguaje)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+    scale_y_continuous(breaks = seq(0, 26, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+
+## Metas de Aprendizajes 
+Se presentan las metas declaradas  por el sector desde 1º básico a IIIº medio (al 15 de julio). Se dejó fuera cuarto medio por que esta condicionado por el proceso PDT. Ajustar las metas considerando los siguientes criterios: 
+
+-  **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?**
+
+- **¿Se usan los verbos adecuados?**  <Font face = "lato" color = blue size = 3>Ejemplo: ***"Demuestran que leen y comprenden textos literarios y no literarios..." (Sexto Básico)*** o  ***"Leer, analizar e interpretar y dialogar en torno a..." (Octavo Básico)***</font>. **Priorizar verbos que engloben más una secuencia de éstos.**
+
+- <Font face = "lato" color = blue size = 3> **¿Dan cuenta de aprendizajes relevantes que deben adquirir mis estudiantes? ¿Es coherente con el plan de estudios?** </font>
+
+- **¿Las metas dan cuenta solo de "saberes" (aprendizajes curriculares) o de desempeños a realizar con lo aprendido?** <Font face = "lato" color = blue size = 3> Ejemplo: ***"Leen e identifican textos narrativos latinoamericanos, con el fin de analizar las características (...)" (Segundo medio)***.</font> **¿Esto debe ser una meta o es parte para llegar a algo más?**  
+
+- <Font face = "lato" color = blue size = 3>**¿Por qué la meta de cuarto básico es similar para ambas unidades?** </font>
+
+-  **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td>Se espera que los estudiantes comprendan que la lectura, escritura y escucha de narraciones nos ayudan a comprender que los textos transmiten información que nos permite reflexionar y opinar respecto a estos y que al escribir palabras y oraciones con sentido nos ayuda a transmitir sentimientos e ideas.</td>
+    <td>Se espera que los estudiantes consoliden el proceso de lectoescritura leyendo en forma independiente y escribiendo diariamente oraciones completas para expresar sus ideas o compartir información en base a temas o textos leidos.</td>
+  </tr>
+  <tr>
+    <td>Segundo básico</td>
+    <td>Los estudiantes comprenderan que diversos textos (cuentos folclóricos, leyendas y artículos informativos) nos ayudan a interiorizarnos con nuestro país.</td>
+    <td>Los estudiantes observarán la naturaleza y su entorno para crear poemas y así expresar emociones que éstos les generan.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico</td>
+    <td>Los estudiantes demostrarán que comprenden variadas tipologías textuales, como noticia y textos informativos usando estrategias de comprensión (recuperación de la información, interpretar y reflexionar, leyendo de manera fluida y a una velocidad adecuada a su nivel lector. Además son capaces de escribir, revisar y editar sus escritos con el fin de satisfaser un proposito y transmitir sus ideas con claridad. </td>
+    <td>Los estudiantes demostrarán que comprenden y contrastan variadas tipologías textuales, como leyenda y mitos usando estrategias de comprensión (recuperación de la información, interpretar y reflexionar, leyendode manera fluida y a una velocidad adecuada a su nivel lector, comunicando en voz de manera coherente y articulada. Además son capaces de escribir sus ideas con claridad y creatividad y expresarlas oralmente de manera clara y articulada para que otros comprendan el mensaje.  </td>
+  </tr>
+  <tr>
+    <td>Cuarto básico</td>
+    <td>Demostrarán que leen y comprenden textos literarios y no literarios  (cuentos folclóricos, noticia y biografía) utilizando  estrategia de comprensión de lectura (recuperar información, interpretar- reflexionar y opinar) con el objetivo de conocer información real que amplie su conocimiento del mundo y vocabulario. </td>
+    <td>Demostrarán que leen y comprenden textos literarios y no literarios (cuentos folclóricos, noticia y biografía) utilizando  estrategia de comprensión de lectura (recuperar información, interpretar- reflexionar y opinar) con el objetivo de conocer información real que amplie su conocimiento del mundo y vocabulario. </td>
+  </tr>
+  <tr>
+    <td>Quinto básico</td>
+    <td>Leen y  comprenden textos no literarios  ( noticias, artículo informativo e  nfografías) utilizando  estrategia de comprensión de lectura (recuperar información, interpretar- reflexionar y opinar) con el objetivo de conocer información real que amplie su conocimiento del mundo y vocabulario. </td>
+    <td>Expresarse de forma escrita u oral de manera clara y precisa, utilizando las diversas estrategias y estructuras trabajadas en clases.</td>
+  </tr>
+  <tr>
+    <td>Sexto básico</td>
+    <td>Demuestran que leen y comprenden textos literarios y no literarios  (cuentos folclóricos, noticia y biografía) utilizando  estrategia de comprensión de lectura (recuperar información, interpretar- reflexionar y opinar) con el objetivo de conocer información real que amplie su conocimiento del mundo y vocabulario. </td>
+    <td>Expresarse  de forma escrita u oral de manera clara y precisa, utilizando las diversas estrategias y estructuras trabajadas en clases.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo (7º básico a IIIº medio)
+
+En este caso, no se consideró cuarto medio porque su foco esta relevado a la prueba PDT.
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico</td>
+    <td> Analizar poemas (romances y poesía popular) para emitir  de manera escrita y oral una opinión fundamentada sobre ellas. </td>
+    <td>Criticar textos de los medios de comunicación,tanto orales como escritos, para formar una opinión sobre la información  que reciben, distingan las opiniones y hechos, aprendan a investigar antes de emitir una opinión, para poder fundamentar sus aseveraciones. </td>
+  </tr>
+  <tr>
+    <td>Octavo básico</td>
+    <td>Leer, analizar e interpretar y dialogar en torno a textos de misterio y  policiales, aplicando las estrategias de comprensión en la lectura y escribiendo textos desaarrollando su creatividad y utilizando oraciones complejas y los recursos de correferencia. Esto se verá reflejado en la creación de un juego que vincula los relatosde misterio y la gramática.</td>
+    <td>Reflexionar y realizar una lectura analítica y crítica de 
+textos de medios de comunicación, tanto orales como escritos, formando una opinión y distinguiendola de los  hechos.Investigando antes de emitir una opinión, a  través de la construcción de textos argumentativos que establezcan una postura cuidando la relación con los otros. Esto se realizará mediante una actividad de escritura argumentativa y exposición de ello frente al curso.  </td>
+  </tr>
+  <tr>
+    <td>Primero medio </td>
+    <td>Analizan obras narrativas  chilenas considerando: temas, conflictos, personajes tipo y estereotipo, ambiente y el contexto de producción en que se desarrollan. </td>
+    <td>Analizan poemas del Romanticismo considerando: símbolos, actitud del hablante, lenguaje figurado y relaciones intertextuales con otras obras.</td>
+  </tr>
+  <tr>
+    <td>Segundo medio</td>
+    <td>Leen e identifican textos narrativos latinoamericanos, con el fin de analizar las caracterísitcas propias del género, los recursos de estilo y las temáticas que plantean. </td>
+    <td>Leen e identifican textos líricos y dramáticos del Siglo de Oro, con el fin de analizar las caracterísitcas propias del género, los recursos de estilo y las temáticas propias de la época.</td>
+  </tr>
+  </tr>
+  <td>Tercero medio</td>
+    <td>Leen e identifican textos narrativos clásicos, con el fin de analizar las caracterísitcas propias del género, los tópicos literarios más reconocibles y los tipos de personajes que aparecen en esas obras.  </td>
+    <td>Leen e identifican obras teatrales clásicas y contemporáneas, con el fin de analizar las caracterísitcas propias del género, sus recursos estilisticos y los tipos de personajes que aparecen. </td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación IIº semestre 2021 
+
+En la siguiente tabla se presentan los procedimientos e instrumentos declarados por el sector (1º básico en adelante) y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios:
+
+- <Font face = "lato" color = blue size = 3>¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento? </font> **En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf).** 
+
+- <Font face = "lato" color = blue size = 3> **¿Existe una diversidad de formas de evaluar o se limitan a la práctica recurrente de procedimientos e instrumentos utilizados en el sector?***</font> **En caso de lo que se declara como Plan Lector(Planl) ¿Cómo se evalúa? ¿Con pruebas, con trabajos, con disertaciones etc.?** 
+
+Por último, se agrega una nube de palabras que quiere reflejar la diversidad de instrumentos y el peso de cada uno de ellos.
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+excel_sheets("Plan de Evaluación II Semestre 2021.xlsx")
+
+excel_Lenguaje<- read_excel("Plan de Evaluación II Semestre 2021.xlsx",sheet="Lenguaje")
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(excel_Lenguaje))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("cplanl", "cdictados","cprueba", "ccontrol"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat, 100)
+w<-wordcloud2(data = cat)
+w
+```
+En el caso del **Plan de Nivel**, les solicito que como sector concuerden y plasmen en la planificación
+
+- En qué sesiones se evaluarán el OA que se hace responsable el sector. 
+- El instrumento que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+
+
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...', echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+
+

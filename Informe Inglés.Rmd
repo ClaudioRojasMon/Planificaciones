@@ -1,0 +1,581 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Inglés"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(stargazer)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+library(kableExtra)
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año. Además, consideran las definiciones claves que tenemos como colegio pero también como institución de la Compañía de Jesús. 
+
+Los apartados del informe son:
+
+- Definiciones Claves
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+- Sugerencias para la planificación de las unidades 2 y 3.
+
+Cada una de las partes de informe incluye sugerencias  que buscan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el logro de los aprendzajes que sean definidos. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+
+library(readxl)
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+Base_I_Semestre_2021$NLI = factor (Base_I_Semestre_2021$NLI , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLI)
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por niveles de logro.
+
+En el caso de los resultados, les sugiero revisar:
+
+- Los promedios finales obtenidos en cada nivel por parte de la asignatura.
+- Cantidad de estudiantes que están en cada nivel de logro.
+- Las diferencias de resultados entre hombres y mujeres.
+
+### Tabla Resumen de Notas: 
+
+Esta tabla incluye la información de la asignatura por  nivel en cuanto:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+```{r Datos Generales en Tabla SKIM por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+Base_Notas <- as.data.frame(Base_I_Semestre_2021)
+
+Base_Notas %>%  group_by(Nivel) %>% summarise(Promedio=mean(Inglés,2, na.rm=TRUE), Mediana= median(Inglés, na.rm=TRUE),NotaMínima=min(Inglés, na.rm=TRUE), NotaMáxima=max(Inglés, na.rm=TRUE ))
+```
+
+### Notas de 1º básico a IVº medio 
+```{r Promedios de Matemáticas de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Inglés, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  #ggtitle("Promedios Lenguaje I Semestre 2021") +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+#### Primeros Básicos 
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+    geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+```
+
+#### Segundos Básicos 
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=factor(NLI), fill= Inglés)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=factor(NLI), fill= Inglés)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 26, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=factor(NLI), fill= Inglés)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 20, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 26, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos
+
+```{r Nivel de Logro 7º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 24, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Octavos Básicos 
+
+```{r Nivel de Logro 8º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+  geom_bar(position = 'stack', stat = 'count')+
+  scale_y_continuous(breaks = seq(0, 35, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 35, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Medios
+```{r Nivel de Logro IIIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="11")  %>%
+  ggplot( aes(x=NLI, fill= Inglés)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 28, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+## Metas de Aprendizajes 
+Se presentan las metas declaradas por el sector (al 15 de julio). Ajustar las metas considerando los siguientes criterios:
+
+-  **¿Están escritas de manera clara y precisa que permita ser evaluada(medida)?**<Font face = "lato" color = blue size = 3> Ejemplo: ***"Demostrar comprensión lectora por medio del desarrollo de actividades relacionadas con el libro ..."*** </font>  **¿Qué significa que *demuestre* comprensión**?
+
+-  **¿Se usan los verbos adecuados?** <Font face = "lato" color = blue size = 3> Ejemplos: " ***Identificar vocabulario (...). Comprender uso de (...). Identificar preguntas con  “has got/hasn’t got” y responderlas en forma (...)" (Segundo básico). "Desarrollar y potenciar habilidades productivas del inglés basadas en un trabajo fílmico o literario..." (Primero medio)***.</font> **Priorizar verbos que engloben más que una secuencia de éstos y que sean verbos que se puedan medir con claridad**
+
+-   **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?** <Font face = "lato" color = blue size = 3>Ejemplo: ***"Asociar alimentos a vocabulario countables e incontables"*** </font>
+
+- <Font face = "lato" color = blue size = 3> ***¿Dan cuenta de aprendizajes relevantes que deben adquirir mis estudiantes? ¿Es coherente con el plan de estudios?***</font>
+
+-  **¿Las metas dan cuenta solo de "saberes" (aprendizajes curriculares)  o de desempeños a realizar con lo aprendido?**  <Font face = "lato" color = blue size = 3> Ejemplo: ***"Reconocer vocabulario relacionado con alimentos y los distintos momentos del día para las meriendas (B9, lunch and dinner)"*** </font> **¿Esto debe ser una meta o es parte del aprendizaje que debe lograr  para alcanzar a una meta?.**
+
+- <Font face = "lato" color = blue size = 3>**Es importante corregir las metas establecidas desde 1º a 6º básico**</font>, **ya que están escritas como  un listado de objetivos.** 
+
+-  **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+  <td>Play Group</td>
+    <td>Reproducir vocabulario nuevo referente a oficios, objetos caracteristicos de cada uno, señales de tránsito, vestuario y distintos tipos de clima. Asi como tambien, será capaz de reconocer al menos una palabra de vocabulario, a traves de imágenes y/o material audiovisual.</td>
+    <td>Nombrar 2 palabras de vocabulario nuevo, referente al sistema solar y sus planetas, la casa, los espacios dentro de ella, y los integrantes de la familia. Asi como también, será capaz de reconocer 4 palabras de vocabulario a través de imágenes y material audiovisual.</td>
+  </tr>
+  <tr>
+  <td>Pre Kinder</td>
+    <td>Reconocer a través de imágenes y textos orales, 10 palabras de vocabulario y nombrar 6 de estas mismas. De la misma forma, será capaz de reconocer 2 grafemas, escuchando el sonido correspondiente, y producir 2 sonidos al observar grafema.</td>
+    <td>Reconocer y nombrar 10 palabras de vocabulario, a través de imágenes y textos orales. De la misma forma, será capaz de reconocer 4 grafemas, al escuchar un sonido, y producirá 4 sonidos al observar los grafemas correscpondientes.</td>
+  </tr>
+  <tr>
+  <td>Kinder</td>
+    <td>Reconocer 10 palabras de vocabulario a través de imágenes y textos orales, y de nombrar 6 palabras del vocabulario. Además, reconocerá y producirá 4 sonidos, al observar un grafema o escuchar un fonema.</td>
+    <td>Reconocer y nombrar 10 palabras del vocabulario a través de imágenes y textos orales, usando frases cortas en inglés (it's a...). Además, reconocerá y producirá 6 sonidos, al observar un grafema o escuchar un fonema. Y, segmentará y unirá grafemas, de forma oral.</td>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td>Reconocer vocabulario relacionado con alimentos y los distintos momentos del día para las meriendas (B9, lunch and dinner). Usar "I have + food" para relacionar que comeremos en cada momento del día. Identificar partes del cuerpo humano y/o animal.Usar "we have got/haven't got" para identificar que partes del cuerpo tenemos y cuáles no. Trabajar la lectura a través de Floppy’s phonics</td>
+    <td>Usar e identificar algunos deportes y saber diferenciar cuáles puedo o no puedo realizar usando can/can't, todo esto a través de proyecto ABP. (Unit 3) Reconocer vocabulario de ropa usando la gramática de "I'm wearing..." e identificar que ropa y accesorios usan los alumnos. Identificar características físicas y accesorios a través del uso de la gramática "He's / she's got...".  Reconocer las partes y espacios de la casa, también utilizando algunas preposiciones (in, on, under),Reconocer vocabulario de objetos de la casa, identificando si están o no dichos objetos,  y cuántos objetos hay. (There is/isn't, there are two, three, four)
+  </tr>
+  <tr>
+    <td>Segundo básico</td>
+    <td>Recordar e identificar vocabulario de las partes del cuerpo de algunos animales y de las personas y pronombres I - We. Repasar uso de “have got” y “haven’t got” usando el vocabulario aprendido de las partes del cuerpo animal y humano.Identificar algunas acciones que realizar los animales y las personas, junto con usar “can / can’t” para mencionar lo que pueden o no pueden hacer.</td>
+    <td>Identificar vocabulario de ropa. Comprender uso de “I’m wearing… + clothes”. Identificar preguntas con  “has got/hasn’t got” y responderlas en forma corta afirmativa y negativa, junto con características físicas o accesorios que usan las personas.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico</td>
+    <td>-Recordar algunas palabras del vocabulario sobre objetos que usan para acampar y snacks
+
+Comprender y asociar vocabulario sobre objetos que pueden usar en su tiempo libre
+
+Usar de manera correcta pronombres posesivos como: mine, yours, ours, his, hers y theirs .Whose (en preguntas) junto con el vocabulario de la unidad Demostrar comprensión lectora por medio del desarrollo de actividades relacionadas con el libro "Gingerbread man" </td>
+    <td>Asociar objetos que nos sirven para crear cosas que realizamos en nuestro tiempo libre y vocabulario de utiles escolares. 
+
+Usar e identificar uso de "I like making... + food/object" y responder usando las opciones: Yes, I do / No, I don't, Reconocer el uso de los pronombres demonstrativos: That, those,  </td>
+  </tr>
+  <tr>
+    <td>4º básico</td>
+    <td>Demostrar comprensión lectora por medio del desarrollo de actividades relacionadas con el libro "King arthur and the sword". 
+
+Aplicar pasado simple del verbo "to be" en actividades en sus tres formas </td>
+    <td>Identificar y relacionar el vocabulario sobre la ciudad de forma oral y escrita. Aplicar "there was" "There were" para describir eventos o situaciones pasadas de forma oral y escrita. </td>
+  </tr>
+  <tr>
+    <td>Quinto básico</td>
+    <td>Demostrar comprensión lectora por medio del desarrollo de actividades relacionadas con el libro "the First Flying Man". 
+
+Aplicar presente continuo en sus tres formas (positiva,negativa,interrogativa) de forma oral y escrita.</td>
+    <td>Asociar alimentos a vocabulario countables e incontables. Aplicar uso de some y any.Identificar uso de there is- there are.</td>
+  </tr>
+  <tr>
+    <td>Sexto básico</td>
+    <td>Demostrar comprensión lectora por medio del desarrollo de actividades relacionadas con el libro "Around the world in 80 days".
+    
+Aplicar pasado simple en sus tres formas (positiva,negativa,interrogativa) por medio de actividades que aborden las 4 habilidades.</td>
+    <td>Reconocer vocabulario relacionado a deportes.Aplicar las reglas del tiempo  futuro  usando  'going to' y 'will'.   </td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo (7º básico a IVº medio)
+
+En este caso, no se consideró cuarto medio porque su foco esta relevado a la prueba PDT.
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico</td>
+    <td> Desarrollar habilidad de comprensión lectora a través de un libro interactivo basado en el texto del plan lector, entregando información relevante acerca de personajes históricos y su principal contribución en la historia de la humanidad. </td>
+    <td>Desarrollar habilidad de producción oral basado en una unidad de public speaking adquiriendo técnicas de expresión oral y corporal, para la representación de una escena icónica de obras fílmicas.</td>
+  </tr>
+  <tr>
+    <td>Octavo básico</td>
+    <td>Desarrollar habilidad de comprensión lectora a través de un libro interactivo basado en el texto del plan lector, identificando los principales eventos, personajes y conceptos claves de la historia.</td>
+    <td>Desarrollar y potenciar habilidad de producción oral basado en una unidad de 'acting' adquiriendo técnicas de expresión oral y corporal, para la representación de una escena icónica de obras fílmicas.  </td>
+  </tr>
+  <tr>
+    <td>Primero medio </td>
+    <td>Desarrollar habilidad de comprensión lectora a través de la confección de un libro interactivo (lapbook) basado en el texto del plan lector, identificando los principales eventos, y conceptos claves de la historia. </td>
+    <td>Desarrollar y potenciar habilidades productivas del inglés basadas en un trabajo fílmico o literario, vinculado a los contenidos de la unidad asociada y cuyo producto final es la representación de una obra de teatro de creación o adaptación propia.</td>
+  </tr>
+  <tr>
+    <td>Segundo Medio</td>
+    <td>Desarrollar habilidad de comprensión lectora a través de la confección de un libro interactivo (lapbook) basado en el texto del plan lector, identificando los principales eventos, personajes y conceptos claves de la historia..  </td>
+    <td></td>
+  </tr>
+  <tr>
+  <td>Cuarto Medio</td>
+    <td>Practicar las 4 habilidades del lenguaje inglés (listening, reading, writing, speaking) por intermedio del proyecto "Socratic seminar". Deben comprender ideas principales y secundarias de un capitulo de la serie "Nosedive" al escucharla y leer los subtitulos en inglés. Luego deben responder (producción) un set de preguntas acerca del capítulo de forma escrita y oral.</td>
+    <td></td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación II Semestre 2021
+En la siguiente tabla se presentan los procedimientos e instrumentos declarados por el sector (1º básico en adelante) y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios:
+
+- <Font face = "lato" color = blue size = 3>¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento? </font> **En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf).** 
+
+- <Font face = "lato" color = blue size = 3> **¿Existe una diversidad de formas de evaluar o se limitan a la práctica recurrente de procedimientos e instrumentos utilizados en el sector?**</font>. **Es necesario revisar si, en la implementación, hay diferencias metodológicas entre Pruebas, Test y Quizz o son distintos nombres para lo mismo. Revisar si todos entienden los mismo para las distintas  evaluaciones, considerando la diversidad de ellas**
+
+- <Font face = "lato" color = blue size = 3> **¿Lo declarado, permite dar cuenta de manera adecuada de los OA y, sobre todo,  de las metas definidas en el sector?**</font> **Por último, revisar si el tipo y cantidad de evaluaciones están en directa relación con cada una de las habilidades del sector de inglés**
+
+
+Por último, se agrega una nube de palabras que refleja el peso de los instrumentos/procedimientos declarados por el sector.
+
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+library(readxl)
+Ingle_s <- read_excel("Inglés.xlsx")
+
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(Ingle_s))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("ctest", "cprueba", "cna", "oral"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat, 20)
+w<-wordcloud2(data = cat)
+w
+```
+
+En el caso del **Plan de Nivel**, les solicito que cómo sector concuerden y plasmen en la planificación:
+
+- En qué sesiones se evaluará el o los OA que se hacen responsables. 
+- El o los instrumentos que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...',  warning=FALSE, message= FALSE,echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+ 
+ 
+ 

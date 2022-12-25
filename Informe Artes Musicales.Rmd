@@ -1,0 +1,598 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Educación Musical"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(stargazer)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+library(kableExtra)
+
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año, considerando las definiciones claves que tenemos como colegio pero también como una institución de la Compañía de Jesús. 
+
+Este informe incluye:
+
+- Definiciones Clases
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+
+Cada una de las partes de informe incluye sugerencias  que bucan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el trabajo de la segunda parte del presente año. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+Base_I_Semestre_2021$NLMU = factor (Base_I_Semestre_2021$NLMU , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLMU)
+
+Base_I_Semestre_2021$NLT = factor (Base_I_Semestre_2021$NLT , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLT)
+
+Base_I_Semestre_2021$NLA= factor (Base_I_Semestre_2021$NLA , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLA)
+
+Tecnologia <- read_excel("Notas /I Semestre 2021/Tecnologia.xlsx")
+
+Artes <- read_excel("Notas /I Semestre 2021/Artes.xlsx")
+
+Musica1112 <- read_excel("Notas /I Semestre 2021/Musica1112.xlsx")
+
+
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por Niveles de Logro.
+
+En el caso de los resultados, les sugiero revisar:
+
+- Los promedios finales obtenidos en cada nivel por parte de la asignatura.
+- Cantidad de estudiantes que están en cada nivel de logro.
+- Las diferencias de resultados entre hombres y mujeres.
+
+### Tabla de Resumen de Notas: 
+
+La tabla incluye la información de la asignatura por nivel:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+#### Tabla 
+
+En el caso de las notas de Iº y IIº Medio (9 y 10) corresponden a las notas de Artes y Música conjuntamente.
+
+```{r Datos Generales en Tabla SKIM por Curso, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align= 'center'}
+
+Base_I_Semestre_2021 %>% group_by(Nivel) %>% summarise(Promedio=mean(Música,2, na.rm=TRUE), Mediana=median(Música,na.rm=TRUE), NotaMínima=min(Música,na.rm=TRUE), NotaMáxima=max(Música, na.rm = TRUE)  )
+```
+
+
+### Notas de Artes Musicales 
+
+En este caso, las notas de de Iº y IIº Medio (9 y 10) corresponden a las notas de Artes y Música conjuntamente.
+
+```{r Promedios de Música de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Música, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+#### Primeros Básicos 
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+geom_bar() +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+  
+
+```
+
+#### Segundos Básicos 
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+  geom_bar() +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+  geom_bar() +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+  geom_bar() +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos
+
+```{r Nivel de Logro 7º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Octavos Básicos 
+
+```{r Nivel de Logro 8º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Primeros Medios Artes Musicales y Artes Visuales
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios Artes Musicales y Artes Visuales
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros y Cuartos Medios
+```{r Nivel de Logro IIIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Musica1112  %>%
+filter(Nivel==c("11","12"))  %>%
+  ggplot( aes(x=NLMU, fill= Música)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 15, 1)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+## Metas de Aprendizajes 
+Se presentan las metas declaradas  por el sector desde 1º básico a IIº medio (al 15 de julio). Ajustar las metas considerando los siguientes criterios:
+
+- **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?**
+
+- **¿Están escritas de manera clara y precisa?, ¿Se usan los verbos adecuados?:**  
+
+<Font face = "lato" color = blue size = 3> Ejemplo 1: ***"Conocer, distinguir e identificar figuras ritmicas simples y su simbologìa musical, desarrollados en el contexto de Villancicos de Navidad."*** </font>**Priorizar verbos que engloben más que una secuencia de éstos y que sean verbos que se puedan medir con claridad. Corregir este tipo de metas.**
+
+<Font face = "lato" color = blue size = 3> Ejemplo 2: ***"Arreglos simples incorporando nuevos elementos musicales, desarrollados en el contexto de Mùsica de Pueblos Originarios."*** </font>**Esto no es una meta es una actividad que podría evaluar una meta.Corregir este tipo de metas.**
+
+<Font face = "lato" color = blue size = 3> Ejemplo 3: ***"Lectura y práctica musical de la escala de Do mayor en base a repertorio de música universal, haciendo música de manera individual y grupal, manejando conceptos del lenguaje musical.Lograr que los estudiantes puedan desarrollar una lectura ritmica( utilizando figuras sencillas como blancas y negras) y de notas musicales con colores.."*** </font>**En este caso, la lectura es una actividad y el desarrollar la lectura ritmica sería la meta.**
+
+<Font face = "lato" color = blue size = 3> Ejemplo 4: ***"Interpretan obras musicales en que el trabajo técnico permite comprender claramente el propósito expresivo de la obra. Interpretan obras, aplicando recursos técnicos y musicales de acuerdo al propósito expresivo.***</font> **En este caso, se deben fusionar en una meta que las englobe.**
+
+- **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+- **Precisar si en algunos niveles habrá una sola meta para el semestre:**<Font face = "lato" color = blue size = 3> Ejemplo: ***4ºbásico*** </font>
+
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td>Conocer, distinguir e identificar figuras ritmicas simples y su simbologìa musical, desarrollados en el contexto de rondas infantiles y folklor. Pràctica instrumental a partir del uso del metalòfono.</td>
+    <td>Conocer, distinguir e identificar figuras ritmicas simples y su simbologìa musical, desarrollados en el contexto de la Navidad. Pràctica instrumental a partir del uso del metalófono.</td>
+  </tr>
+  <tr>
+    <td>Segundo básico</td>
+    <td>Arreglos simples incorporando nuevos elementos musicales, desarrollados en el contexto de Mùsica de Pueblos Originarios.</td>
+    <td>Conocer, distinguir e identificar figuras ritmicas simples y su simbologìa musical, desarrollados en el contexto de Villancicos de Navidad.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico</td>
+    <td>Identificar las notas en el pentagrama asociando las figuras rìtmicas aprendidas en el contexto de mùsica de pelìculas y series infantiles. Practica Instrumental a partir del uso de metalófonos, piano o teclado y Ukelele. </td>
+    <td>Arreglos musicales simples incorporando nuevos instrumentos, desarrollados en el contexto de mùsica latinoamericana y villancicos de navidad. Práctica instrumental apoyados en el uso de metalófonos, piano o teclados y ukelele. </td>
+  </tr>
+  <tr>
+    <td>Cuarto básico</td>
+    <td>Lectura y práctica musical de la escala de Do mayor en base a repertorio de música universal, haciendo música de manera individual y grupal, manejando conceptos del lenguaje musical.                                                                  
+
+Lograr que los estudiantes puedan desarrollar una lectura ritmica( utilizando figuras sencillas como blancas y negras) y de notas musicales con colores. </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Quinto básico</td>
+    <td>Lectura y práctica musical de la escala de Do mayor y Sol mayor en base a repertorio de música universal, ampliando el panorama de la música, tanto de América como del mundo, de diferentes géneros y estilos, por medio del escuchar, interpretar y crear.                                                         
+
+Lograr que los estudiantes puedan desarrollar una lectura ritmica( utilizando figuras sencillas como blancas y negras) y de notas musicales con colores.   </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Sexto básico</td>
+    <td>Lectura y práctica musical de la escala de Do mayor, Sol mayor y Fa mayor, a través de la interpretación musical, los estudiantes van fortaleciendo  habilidades comunicativas para ser capaces de compartir y transmitir sus ideas musicales y su trabajo interpretativo.                                                 
+
+Lograr que los estudiantes puedan interpretar el repertorio según su nivel, basandose en la música de diferentes lugares y épocas.   </td>
+    <td></td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo (7º básico a IIIº medio)
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico</td>
+    <td>Prestan atención al quehacer musical propio y de otros. 
+
+Cantan y tocan a más de una voz comprendiendo aspectos rítmicos y melódicos.                                                                                                  Lograr que los estudiantes puedan interpretar el repertorio según su nivel, basandose en la música de diferentes lugares y épocas.  </td>
+    <td>Tocan instrumentos musicales con precisión rítmica y melódica, demostrando una actitud de confianza y seguridad.
+
+Participan de actividades musicales con interés y dedicación, siguiendo las indicaciones de quien dirige al cantar y tocar.</td>
+  </tr>
+  <tr>
+    <td>Octavo básico</td>
+    <td>Cantan/tocan repertorio diverso aplicando las habilidades y los conocimientos desarrollados. Cantan/tocan música popular aplicando rasgos estilísticos simples.                                                                                             Lograr que los estudiantes puedan interpretar el repertorio según su nivel, basandose en la música de diferentes lugares y épocas.    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Primero medio </td>
+    <td>Demuestran fluidez en la interpretación musical de repertorio diverso a una y más voces. 
+
+Aplican características de algún estilo al cantar y tocar repertorio diverso (folclor, popular, entre otros), de acuerdo a sus elementos y procedimientos compositivos.                                                                          
+    
+Lograr una buena interpretación del repertorio orquestal.</td>
+    <td>Transmiten un propósito expresivo utilizando elementos del lenguaje musical al cantar y tocar, de acuerdo al repertorio interpretado. 
+
+Evalúan propositivamente el desempeño musical propio y de sus compañeros y compañeras, considerando aspectos como precisión rítmica y melódica, creatividad, responsabilidad, entre otros.</td>
+  </tr>
+  <tr>
+    <td>Segundo medio</td>
+    <td>Cantar y tocar repertorio diverso sobre la base de una selección personal, desarrollando habilidades tales como manejo de estilo, fluidez, capacidad de proponer y dirigir, identificación de voces y funciones en un grupo, entre otras.</td>
+    <td>Conocer y comprender cómo la música se ha ligado naturalmente con otras artes en distintas épocas y lugares</td>
+  </tr>
+  </tr>
+  <td>Tercero medio</td>
+    <td>Interpretan obras musicales en que el trabajo técnico permite comprender claramente el propósito expresivo de la obra. 
+
+Interpretan obras, aplicando recursos técnicos y musicales de acuerdo al propósito expresivo.
+</td>
+    <td>Experimentar con diversos estilos musicales contemporáneos, utilizando diferentes recursos de producción musical (voz, objetos sonoros, instrumentos musicales y tecnologías). 
+
+Evalúan procesos y resultados de interpretaciones musicales personales y de sus pares, utilizando criterios estéticos, como propósitos expresivos y uso de lenguaje musical.</td>
+ </tr>
+  </tr>
+  <td>Cuarto medio</td>
+    <td>Interpretan obras musicales en que el trabajo técnico permite comprender claramente el propósito expresivo de la obra. 
+
+Interpretan obras, aplicando recursos técnicos y musicales de acuerdo al propósito expresivo</td>
+    <td>Experimentar con diversos estilos musicales contemporáneos, utilizando diferentes recursos de producción musical (voz, objetos sonoros, instrumentos musicales y tecnologías). 
+
+Evalúan procesos y resultados de interpretaciones musicales personales y de sus pares, utilizando criterios estéticos, como propósitos expresivos y uso de lenguaje musical. </td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación IIº semestre 2021
+En la siguiente tabla se presentan los procedimientos e instrumentos declarados por el sector (1º básico en adelante) y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios: 
+
+- <Font face = "lato" color = blue size = 3>¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento? </font> **En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf).**  
+
+- <Font face = "lato" color = blue size = 3> ¿Existe una diversidad de formas de evaluar o se limitan a la práctica recurrente de procedimientos e instrumentos utilizados en el sector?</font> **¿Por qué se declaran realizar tantas pruebas?** 
+
+Por último, se agrega una nube de palabras que quiere reflejar la diversidad de instrumentos y el peso de cada uno de ellos.
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+excel_sheets("Plan de Evaluación II Semestre 2021.xlsx")
+
+Música<- read_excel("Plan de Evaluación II Semestre 2021.xlsx",sheet="Artes Musicales")
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(Música))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("035", "099999999999999989","cporcentaje", "1º","2º", "3º","4º","5º", "6º", "7º", "8º","iiiº", "iiº", "cna", "ivº", "iº", "cunidad", "básico", "medio", "cinstrumento", "final", "interpretación"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat, 100)
+MU<-wordcloud2(data = cat)
+MU
+```
+En el caso del **Plan de Nivel**, les solicito que como sector concuerden y plasmen en la planificación
+
+- En qué sesiones se evaluarán el OA que se hace responsable el sector. 
+- El instrumento que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+
+
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...', echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+
+

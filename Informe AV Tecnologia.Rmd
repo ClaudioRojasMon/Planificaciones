@@ -1,0 +1,649 @@
+---
+title: "Informe Primer Semestre 2021"
+subtitle: "Artes Visuales y Tecnología"
+author: "Claudio Rojas. Director Académico"
+date: "`r format(Sys.Date())`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+---
+<style>
+body {
+text-align: justify}
+</style>
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(dslabs)
+library(gridExtra)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+library(stargazer)
+library(plotly)
+library(hrbrthemes)
+library(viridis)
+library(readxl)
+library(printr)
+library(knitr)
+library(modeest)
+library(palmerpenguins)
+library(skimr)
+library(dlookr)
+library(patchwork)
+library(GGally)
+library(kableExtra)
+
+library(tm)
+
+
+```
+
+## Presentación 
+
+El presente informe tiene como objetivo revisar el trabajo del sector, a través de información que sistematiza los resultados académicos del I semestre y recoge lo  proyectado para el II semestre del presente año, considerando las definiciones claves que tenemos como colegio pero también como una institución de la Compañía de Jesús. 
+
+Este informe incluye:
+
+- Definiciones Clases
+- Informe de Notas 
+- Metas de Aprendizaje.
+- Propuestas de Evaluación II Semestre.
+
+Cada una de las partes de informe incluye sugerencias  que bucan orientar  la reflexión y práctica del sector para poder realizar los ajustes que sean necesarios para el trabajo de la segunda parte del presente año. 
+
+```{r Bases de datos usadas, ImportarDatos, results='hide', warning=FALSE, message= FALSE, echo=FALSE}
+
+Base_I_Semestre_2021 <- read_excel("Notas /I Semestre 2021/Base I Semestre 2021.xlsx")
+
+primer_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("1","2"))
+
+segundo_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("3","4", "5","6"))
+
+tercer_ciclo <- Base_I_Semestre_2021%>% filter(Nivel== c("7","8", "9"))
+
+cuarto_ciclo <- Base_I_Semestre_2021 %>% filter(Nivel== c("10","11", "12"))
+
+Plan_de_Evaluacio_n_II_Semestre_2021 <- read_excel("~/Documents/Base de Datos SFJ/Plan de Evaluación II Semestre 2021.xlsx")
+
+Base_I_Semestre_2021$NLMU = factor (Base_I_Semestre_2021$NLMU , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLMU)
+
+Base_I_Semestre_2021$NLT = factor (Base_I_Semestre_2021$NLT , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLT)
+
+Base_I_Semestre_2021$NLA= factor (Base_I_Semestre_2021$NLA , levels=c("Inicial", "Elemental", "Adecuado", "Destacado"))
+levels(Base_I_Semestre_2021$NLA)
+
+Tecnologia <- read_excel("Notas /I Semestre 2021/Tecnologia.xlsx")
+
+Artes <- read_excel("Notas /I Semestre 2021/Artes.xlsx")
+
+
+```
+## Definiciones Claves
+
+Les recuerdo tener presente las definiciones claves tanto a nivel de red ignaciana como interna que deben siempre orientar nuestro trabajo académico.
+
+### Envío 3 Planificación Estratégica de los colegios Jesuitas
+
+<Font face = "lato" color = blue size = 3> Asegurar que los 10 colegios y escuelas jesuitas desarrollen las prácticas y procesos necesarios para ofrecer la excelencia académica propia de una comprensión ignaciana de la educación de calidad. </font>
+
+### Nuestra Definición de Calidad
+
+<Font face = "lato" color = blue size = 3> Nosotros, como comunidad sanjavierina, entendemos por educación de calidad todo aprendizaje que nos lleva a descubrir y desarrollar  nuestras capacidades de manera integral, formándonos como personas competentes, conscientes, comprometidas, compasivas y creativas, para así conocer y amar más y mejor a Jesucristo, sirviendo a nuestros hermanos en los diversos contextos sociales. </font>
+
+### Nuestro Foco de Mejora
+
+<Font face = "lato" color = blue size = 3> Fortalecer la propuesta curricular, con una didáctica renovada, bajo el Paradigma Pedagógico Ignaciano.</font>
+
+## Informe de Notas
+
+El informe de notas contiene la siguiente información:
+
+- Tabla de Resumen de las notas por nivel.
+- Notas de 1º básico a IVº medio.
+- Distribución por Niveles de Logro.
+
+<Font face = "lato" color = blue size = 3>En el caso de los resultados, les sugiero analizar:</font>
+
+- <Font face = "lato" color = blue size = 3>Los promedios finales obtenidos por cada nivel</font>
+- <Font face = "lato" color = blue size = 3>Cantidad de estudiantes que están en cada nivel de logro.</font>
+- <Font face = "lato" color = blue size = 3>Las diferencias de resultados entre hombres y mujeres.</font>
+
+### Tabla de Resumen de Notas: 
+
+Estas tablas incluyen la información de cada asignatura por nivel:
+
+- Promedio de la asignatura.
+- Nota Mínima.
+- Mediana.
+- Nota Máxima.
+
+
+
+#### Tabla 1: Artes Visuales
+```{r Datos Generales Artes, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align='center'}
+
+Artes %>% group_by(Nivel) %>% summarise(Promedio=mean(Artes,2, na.rm=TRUE), Mediana=median(Artes,na.rm=TRUE), NotaMínima=min(Artes,na.rm=TRUE), NotaMáxima=max(Artes, na.rm = TRUE))
+
+```
+
+
+#### Tabla 2: Tecnología
+
+```{r Datos Generales Tecnología, echo=FALSE, message=FALSE, warning=FALSE, results='hold', align='center'}
+
+Tecnologia  %>% group_by(Nivel) %>% summarise(Promedio=mean(Tecnología,2, na.rm=TRUE), Mediana=median(Tecnología,na.rm=TRUE), NotaMínima=min(Tecnología,na.rm=TRUE), NotaMáxima=max(Tecnología, na.rm = TRUE))
+
+```
+
+
+### Notas  Artes Visuales
+
+```{r  Promedios de Artes de 1º básico a IVº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Artes, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+### Notas de Tecnología 
+
+```{r Promedios de Tecnología de 1º básico a IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021 %>%
+ggplot( aes(x=as.factor(Nivel), y=Tecnología, group=Nivel)) +
+  geom_boxplot(outlier.colour = "green")  +
+  theme_ipsum() +
+ theme(
+    legend.position="bottom",
+    plot.title = element_text(size=9,hjust = 0.5 )) +
+  scale_y_continuous(breaks = seq(1, 7, 0.5)) +
+  stat_boxplot(geom = "errorbar",     
+               width = 0.5) +
+  stat_summary(fun=mean, geom="point", shape=18,
+               size=3, color="red") +
+    stat_summary(fun=mlv, geom="point", shape=18,
+               size=3, color="orange", method= "mfv") +
+ xlab("Niveles") +
+    ylab("Promedios") +
+  theme(axis.title.x = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0))) +
+    theme(axis.title.y = element_text(face="bold", hjust=0.5, colour="black", size=rel(1.0)))
+
+```
+
+### Distribución de Estudiantes por Niveles de Logro y diferenciado por Sexo.
+
+#### Primeros Básicos Tecnología
+
+```{r Niveles  de Logro 1º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="1")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+    geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+  facet_wrap(~Sexo)
+  
+
+```
+
+#### Segundos Básicos Tecnología
+
+```{r  Nivel de Logro 2º básicos, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="2")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro")+
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros Básicos
+
+```{r Niveles de Logro 3º básico, fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021 %>%
+filter(Nivel=="3")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Cuartos Básicos Artes
+
+```{r  Nivel de Logro 4º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="4")  %>%
+  ggplot( aes(x=NLA, fill= Artes)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Quintos Básicos Tecnología
+
+```{r Niveles de Logro 5º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="5")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 50, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Sextos Básicos Artes
+
+```{r Nivel de Logro 6º básico, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="6")  %>%
+  ggplot( aes(x=NLA, fill= Artes)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 50, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos Artes 
+
+```{r Nivel de Logro 7º Artes, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLA, fill= Artes)) +
+  geom_bar(position = 'stack', stat = 'count')+
+  scale_y_continuous(breaks = seq(0, 45, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+#### Séptimos Básicos Tecnología
+
+```{r Nivel de Logro 7º Tecnologia, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="7")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+  geom_bar(position = 'stack', stat = 'count')+
+  scale_y_continuous(breaks = seq(0, 45, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+#### Octavos Básicos Artes
+
+```{r Nivel de Logro 8º Artes, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLA, fill= Artes)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Octavos Básicos Tecnología
+
+```{r Nivel de Logro 8º tecnologia, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+Base_I_Semestre_2021   %>%
+filter(Nivel=="8")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+  geom_bar(position = 'stack', stat = 'count')+
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+
+```
+
+
+#### Primeros Medios Tecnología
+```{r Nivel de Logro Iº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="9")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Segundos Medios Tecnología
+```{r Nivel de Logro IIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Base_I_Semestre_2021   %>%
+filter(Nivel=="10")  %>%
+  ggplot( aes(x=NLT, fill= Tecnología)) +
+    #geom_bar(stat="count", position="stack") +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 60, 5)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+#### Terceros y Cuartos Medios Artes
+```{r Nivel de Logro IIIº medio, fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+Artes  %>%
+filter(Nivel==c("11","12"))  %>%
+  ggplot( aes(x=NLA, fill= Artes)) +
+  geom_bar(position = 'stack', stat = 'count') +
+  scale_y_continuous(breaks = seq(0, 30, 2)) +
+     xlab("Niveles de Logro") +
+  ylab("Cantidad de Estudiantes por Nivel de Logro") +
+  theme(legend.position = "none") +
+facet_wrap(~Sexo)
+```
+
+
+## Metas de Aprendizajes 
+Se presentan las metas declaradas  por el sector desde 1º básico a IIº medio (al 15 de julio). Ajustar las metas considerando los siguientes criterios:
+
+- **¿Contienen errores gramaticales:**<Font face = "lato" color = blue size = 3> **Redacción, Faltas de Ortografía**</font> **?**
+
+- **¿Están escritas de manera clara y precisa que permite** <Font face = "lato" color = blue size = 3>***evaluar (medible)***</font>**?**:
+
+
+<Font face = "lato" color = blue size = 3>Ejemplo 1: ***"Realicen esculturas  y otras manifestaciones visuales acerca de temas relacionados al género. Para esto deberán realizar trabajos visuales basados en ideas que se originan a partir de la observación e investigación de manifestaciones visuales de diversas y variadas culturas. Justificando el o los propósitos expresivos en su creación personal como interpretar las creaciones de sus compañeros y compañeras"(Séptimo básico Artes)***.</font>  <Font face = "lato" color = black size = 3>**En este caso, hay mezcla de la meta con el proceso. Corregir aquellas metas que sigan este patrón.**</font> 
+
+<Font face = "lato" color = blue size = 3>Ejemplo 2:***"Analizar la interacción entre tecnología y sociedad, y desarrollar habilidades de pensamiento reflexivo y crítico" (Primero medio Tecnología)***.</font> <Font face = "lato" color = black size = 3> **En este caso, para lograr analizar se asume que se desarrollaron las habilidades reflexivas y criticas. Por ende, están dentro del proceso, no es necesario que vayan en la meta**.</font>
+
+<Font face = "lato" color = blue size = 3>Ejemplo 3 ***"Se pretende sentar las bases para que los estudiantes desarrollen su capacidad crítica como usuarios, consumidores y productores acerca del avance tecnológico y sus efectos en la sociedad y el ambiente"(Segundo medio Tecnología)***</font>.<Font face = "lato" color = black size = 3> **No queda claro cuál es la meta sobre todo en como comienza: El sentar las bases**.</font>
+
+- <Font face = "lato" color = black size = 3>**¿Se usan los verbos adecuados?**</font> <Font face = "lato" color = blue size = 3> Ejemplo: ***"Investigar, experimentar  y crear  proyectos multimediales, a partir de temas personales y desafíos creativos. Para esto podrán combinar medios de expresión tanto visuales como audiovisuales y sonoros, entre otros. También se busca que aprecien estéticamente y reflexionen acerca de manifestaciones multimediales de diferentes creadores y creadoras, las propias y las de sus pares, argumentando juicios críticos basándose en la selección de criterios pertinentes para el análisis estético"(Segundo medio Tecnología)***.</font> **El verbo**  <Font face = "lato" color = blue size = 3> ***Crear*** </font> **es la meta, en cambio** <Font face = "lato" color = blue size = 3>***Investigar***</font> **y** <Font face = "lato" color = blue size = 3>***Experimentar***</font> **es parte del proceso que conduce a la meta. Por lo tanto, sugiero reescribir este tipo de metas**.
+
+-  **Revisar que las metas den cuenta de** <Font face = "lato" color = blue size = 3> ***aprendizajes relevantes***</font> **que deben adquirir mis estudiantes.**
+
+-  **Importante completar en los niveles donde no hay metas de artes o tecnología:** <Font face = "lato" color = blue size = 3> ***Primero y Cuarto Básico***.</font>
+
+-  **Ajustar las metas que contengan  verbos que son poco precisos a la hora de medir:** <Font face = "lato" color = blue size = 3>***Comprender, Reflexionar***</font>. **Pero también, aquellas que contengan verbos que den cuenta de niveles básicos de aprendizaje:** <Font face = "lato" color = blue size = 3>***Identificar, Reconocer, Describir***</font>. **Las metas de aprendizajes deben ser** <Font face = "lato" color = blue size = 3>***Medibles***</font>  **pero también** <Font face = "lato" color = blue size = 3>***Desafiantes***.</font>
+
+### Metas de Aprendizajes Primer Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Primero Básico</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Segundo básico Artes</td>
+    <td>Los estudiantes comunicarán a través de expresiones artísticas, obras vinculadas al proyecto de pueblos originarios.</td>
+    <td>Los estudiantes utilizan y crean textos instructivos para elaborar trabajos artísticos, utilizando distintas técnicas y materiales.</td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Segundo Ciclo
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+     <td>Tercero básico Artes</td>
+    <td>Desarrollar su expresión y creatividad visual por medio de la elaboración de diferentes trabajos de Arte a partir de temas relacionados al entorno natural como flores, animales, observando referentes visuales, teniendo un sentido de apreaciaón y observación para experimentar con diferentes ténicas como Dibujo, pintura y modelado.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Cuarto básico</td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>Quinto básico Artes</td>
+    <td>Progresar en habilidades de creación visual por medio de la realización de trabajos de Arte centrados en personajes y/o referentes. Obervación y apreciación de ejemplos y la utilización de diversos medios de expresión como dibujo, modelado y medios tecnológicos como la animación para comunicar. </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Sexto básico Tecnología</td>
+    <td>Crear diseños innovadores de objetos o sistemas tecnológicos para aprovechar oportunidades o entregar soluciones a diversos problemas.</td>
+    <td></td>
+  </tr>
+</table>
+
+</body>
+</html>
+
+### Metas de Aprendizajes Tercer y Cuarto Ciclo (7º básico a IIº medio)
+
+<html>
+<head>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr>
+    <th>Nivel</th>
+    <th>Segunda Unidad</th> 
+    <th>Tercera Unidad</th>
+  </tr>
+  <tr>
+    <td>Séptimo básico Artes</td>
+    <td> Realicen esculturas  y otras manifestaciones visuales acerca de temas relacionados al género. Para esto deberán realizar trabajos visuales basados en ideas que se originan a partir de la observación e investigación de manifestaciones visuales de diversas y variadas culturas. Justificando el o los propósitos expresivos en su creación personal como interpretar las creaciones de sus compañeros y compañeras.</td>
+    <td>Realizar pinturas, collages y objetos visuales, teniendo como referente percepciones, emociones e ideas provocadas por la apreciación de íconos sociales de diferentes épocas y culturas, especialmente de sus propios contextos. Seleccionando materiales, herramientas  y procedimientos para el logro de su creación. </td>
+  </tr>
+  <tr>
+  </tr>
+  <tr>
+    <td>Séptimo básico Tecnología</td>
+    <td> Elaborar objetos o sistemas innovadores, explorando en el entorno para aprovechar oportunidades o entregar soluciones al problema planteado.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Octavo básico Artes</td>
+    <td>Crear instalaciones a partir de temas propuestos por estudiantes o por el profesor, dónde logren justificar sobre sus propósitos y temas de interes y experimentar con diferentes materialidades, herramientas y propósitos mediante diversos procedimientos para la elaboración de piezas textiles que sean respetuosas con el medio ambiente.</td>
+    <td></td>
+  </tr>
+  <tr>
+  </tr>
+  <tr>
+    <td>Octavo básico Tecnología</td>
+    <td>Diseñar un producto tecnológico respetando criterios de sustentabilidad y usando herramientas digitales. Comunicar el resultado del diseño utilizando aplicaciones de imagen, audio y video.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Primero medio Artes </td>
+    <td>Desarrollar trabajos y proyectos de diseño urbano y pintura mural, basados en temáticas personales y en la apreciación de diferentes tipos de pinturas y elementos de diseño urbano y mural. </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Primero medio Tecnología</td>
+    <td>Analizar la interacción entre tecnología y sociedad, y desarrollar habilidades de pensamiento reflexivo y crítico. </td>
+    <td></td>
+  </tr>
+  </tr>
+  <td>Segundo medio Artes</td>
+    <td>Investigar, experimentar  y crear  proyectos multimediales, a partir de temas personales y desafíos creativos. Para esto podrán combinar medios de expresión tanto visuales como audiovisuales y sonoros, entre otros. También se busca que aprecien estéticamente y reflexionen acerca de manifestaciones multimediales de diferentes creadores y creadoras, las propias y las de sus pares, argumentando juicios críticos basándose en la selección de criterios pertinentes para el análisis estético.</td>
+    <td></td>
+    </tr>
+  </tr>
+  <td>Segundo medio Tecnología</td>
+    <td>Se pretende sentar las bases para que los estudiantes desarrollen su capacidad crítica como usuarios, consumidores y productores acerca del avance tecnológico y sus efectos en la sociedad y el ambiente.</td>
+    <td></td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
+
+## Plan de Evaluación IIº semestre 2021
+En la siguiente tabla se presentan los procedimientos e instrumentos declarados tanto en Artes Visuales como en Tecnología  y la cantidad de veces que se repiten. Revisar lo declarado en el plan de evaluación considerando los siguientes criterios:
+
+- <Font face = "lato" color = blue size = 3> **¿Hay claridad en el sector entre lo que es un procedimiento y su diferencia con el instrumento?**</font>. <Font face = "lato" color = black size = 3>En el caso de dudas, revisar nuestro [Reglamento de Evaluación](https://www.colsanjavier.cl/files/documentos/REGLAMENTO%20INTERNO%20DE%20EVALUACIÓN%202021.%20[v.%2030-04-2021].pdf)</font>. 
+
+- <Font face = "lato" color = blue size = 3> **¿Existe una diversidad de formas de evaluar o se limitan a la práctica tradicional de procedimientos e instrumentos utilizados por sector?**</font>  Discutir en el sector si todos entienden lo mismo por: <Font face = "lato" color = blue size = 3>***"prototipo", "investigación", "trabajo","informe de avance".***</font> 
+
+Por último, se agrega una nube de palabras que quiere reflejar la diversidad de instrumentos y el peso de cada uno de ellos.
+
+```{r , results='hide',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+
+
+excel_sheets("Plan de Evaluación II Semestre 2021.xlsx")
+
+Artes<- read_excel("Plan de Evaluación II Semestre 2021.xlsx",sheet="Artes Visuales")
+```
+
+
+```{r Cuadro de Palabras , fig.show='hold',  fig.align='center', warning=FALSE, message= FALSE,echo=FALSE}
+library (wordcloud2)
+
+Desc<- Corpus(VectorSource(Artes))
+cat<-tm_map(Desc, removeWords, stopwords("spanish"))
+cat<-tm_map(cat, tolower)
+cat<-tm_map(cat, removePunctuation)
+cat<-tm_map(cat, removeWords, c("099999999999999989", "035","025", "básico", "cporcentaje", "medio", "cinstrumento", "1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "cna", "iiiº", "iiº", "ivº", "iº", "cna", "cunidad"))
+cat<-TermDocumentMatrix(cat) 
+cat<- as.matrix(cat) 
+cat <- sort(rowSums(cat),decreasing=TRUE) 
+cat <- data.frame(word = names(cat),freq=cat)
+
+head(cat, 100)
+AT<-wordcloud2(data = cat)
+AT
+```
+En el caso del **Plan de Nivel**, les solicito que como sector concuerden y plasmen en la planificación
+
+- En qué sesiones se evaluarán el OA que se hace responsable el sector. 
+- El instrumento que usarán para concretar esta evaluación.
+
+Es importante que ustedes como jefes de sector hagan sequimiento de este proceso, ya que  es el medio con el cual concretamos la formación integral. Pero, además, los resultados obtenidos, es lo que informamos a los estudiantes y sus familias en los distintos objetivos de aprendizajes asociados a las tres dimensiones de nuestro Mapa de Formación Integral. 
+
+
+
+
+## Planificación de Clases
+ Durante las siguientes dos semanas pondremos énfasis en la planificación. Por lo que es importante avanzar toda la unidad 2 durante este tiempo. Para organizar la planificación les sugiero pensar un modelo de clases que considere la siguiente estructura. Esto con el objetivo de asegurar  el aprendizaje de sus estudiantes:
+ 
+```{r, out.width='100%', fig.align='center', fig.cap='...', echo=FALSE}
+knitr::include_graphics('Modelo de Clases.png')
+
+```
+
+
